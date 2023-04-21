@@ -33,7 +33,7 @@ if sys.platform == "darwin":
     log.info("CFLAGS: " + os.environ['CFLAGS'])
 
 # from MC
-if platform.processer()[:3] =='x86':
+if platform.processor()[:3] =='x86':
    if 'CFLAGS' in os.environ:        
        os.environ['CFLAGS'] += " msse4.2 -maes"
    else:
