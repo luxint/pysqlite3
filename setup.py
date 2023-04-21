@@ -134,7 +134,7 @@ class AmalgationLibSqliteBuilder(build_ext):
         ext.define_macros.append(("SQLITE_MAX_MMAP_SIZE", str(2**40)))
            
         # from MC Disable double quote as literal   
-        ext.define_macros.append(("SQLITE_DQS", "0")  
+        ext.define_macros.append(("SQLITE_DQS", "0"))  
                                  
         # from MC                         
         ext.define_macros.append(("SQLITE_MAX_ATTACHED", "10"))   
