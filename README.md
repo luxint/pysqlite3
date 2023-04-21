@@ -14,7 +14,6 @@ Download the amalgamation files from https://github.com/utelle/SQLite3MultipleCi
 ```
 # Copy the sqlite3mc_amalgamation files into the root of the pysqlite3 checkout
 # and run build_static + build:
-$ cp sqlite/sqlite3.[ch] pysqlite3/
 $ cd pysqlite3
 $ python setup.py build_static build
 ```
