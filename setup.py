@@ -117,8 +117,7 @@ class AmalgationLibSqliteBuilder(build_ext):
             'FILEIO',
             'ENABLE_SERIES',
             'ENABLE_UUID',
-            'ENABLE_REGEXP',
-            'USER_AUTHENTICATION'                         
+            'ENABLE_REGEXP'                     
         )
         for feature in features:
             ext.define_macros.append(('SQLITE_%s' % feature, '1'))
