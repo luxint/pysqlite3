@@ -1,11 +1,11 @@
-pysqlite3
+pysqlite3-enc
 =========
 
 This library takes the SQLite module from Python 3 and packages it as a
 separately-installable module.
 
 Intended to be used with the amalgamation files from https://github.com/utelle/SQLite3MultipleCiphers
-to build a encryption enabled SQLite to be used in python.
+to build an encryption enabled SQLite to be used in python.
 
 
 Building a statically-linked library
