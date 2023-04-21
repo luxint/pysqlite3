@@ -35,9 +35,9 @@ if sys.platform == "darwin":
 # from MC
 if platform.processor()[:3] =='x86':
    if 'CFLAGS' in os.environ:        
-       os.environ['CFLAGS'] += " msse4.2 -maes"
+       os.environ['CFLAGS'] += " -msse4.2 -maes"
    else:
-       os.environ['CFLAGS'] = "msse4.2 -maes"             
+       os.environ['CFLAGS'] = "-msse4.2 -maes"             
 
 def quote_argument(arg):
     q = '\\"' if sys.platform == 'win32' and sys.version_info < (3, 9) else '"'
