@@ -4,6 +4,7 @@
 import os
 import setuptools
 import sys
+import platform
 
 from distutils import log
 from distutils.command.build_ext import build_ext
@@ -24,11 +25,19 @@ sources = [os.path.join('src', source)
 packages = [PACKAGE_NAME]
 EXTENSION_MODULE_NAME = "._sqlite3"
 
+
+
 # Work around clang raising hard error for unused arguments
 if sys.platform == "darwin":
     os.environ['CFLAGS'] = "-Qunused-arguments"
     log.info("CFLAGS: " + os.environ['CFLAGS'])
 
+# from MC
+if platform.processer()[:3] =='x86':
+   if 'CFLAGS' in os.environ:        
+       os.environ['CFLAGS'] += " msse4.2 -maes"
+   else:
+       os.environ['CFLAGS'] = "msse4.2 -maes"             
 
 def quote_argument(arg):
     q = '\\"' if sys.platform == 'win32' and sys.version_info < (3, 9) else '"'
@@ -52,16 +61,16 @@ class SystemLibSqliteBuilder(build_ext):
 
 
 class AmalgationLibSqliteBuilder(build_ext):
-    description = "Builds a C extension using a sqlite3 amalgamation"
+    description = "Builds a C extension using sqlite3 amalgamation files from https://github.com/utelle/SQLite3MultipleCiphers/releases"
 
     amalgamation_root = "."
-    amalgamation_header = os.path.join(amalgamation_root, 'sqlite3.h')
-    amalgamation_source = os.path.join(amalgamation_root, 'sqlite3.c')
+    amalgamation_header = os.path.join(amalgamation_root, 'sqlite3mc_amalgamation.h')
+    amalgamation_source = os.path.join(amalgamation_root, 'sqlite3mc_amalgamation.c')
 
     amalgamation_message = ('Sqlite amalgamation not found. Please download '
-                            'or build the amalgamation and make sure the '
-                            'following files are present in the pysqlite3 '
-                            'folder: sqlite3.h, sqlite3.c')
+                            ' from https://github.com/utelle/SQLite3MultipleCiphers/releases'
+                            'make sure following files are present in the pysqlite3 '
+                            'folder: sqlite3mc_amalgamation.h, sqlite3mc_amalgamation.c')
 
     def check_amalgamation(self):
         if not os.path.exists(self.amalgamation_root):
@@ -92,10 +101,28 @@ class AmalgationLibSqliteBuilder(build_ext):
             'ENABLE_STAT4',
             'ENABLE_UPDATE_DELETE_LIMIT',
             'SOUNDEX',
-            'USE_URI',
+            'USE_URI',      
+   ## from MC                
+            'THREADSAFE',
+            'ENABLE_COLUMN_METADATA',
+            'SECURE_DELETE',
+            'ENABLE_DESERIALIZE',
+            'ENABLE_GEOPOLY',
+            'ENABLE_PREUPDATE_HOOK',
+            'CORE',
+            'ENABLE_EXTFUNC',
+            'ENABLE_CSV',
+            'SHA3',
+            'CARRAY',
+            'FILEIO',
+            'ENABLE_SERIES',
+            'ENABLE_UUID',
+            'ENABLE_REGEXP',
+            'USER_AUTHENTICATION'                         
         )
         for feature in features:
             ext.define_macros.append(('SQLITE_%s' % feature, '1'))
+           
 
         # Always use memory for temp store.
         ext.define_macros.append(("SQLITE_TEMP_STORE", "3"))
@@ -105,7 +132,13 @@ class AmalgationLibSqliteBuilder(build_ext):
 
         # Increase maximum allowed memory-map size to 1TB
         ext.define_macros.append(("SQLITE_MAX_MMAP_SIZE", str(2**40)))
-
+           
+        # from MC Disable double quote as literal   
+        ext.define_macros.append(("SQLITE_DQS", "0")  
+                                 
+        # from MC                         
+        ext.define_macros.append(("SQLITE_MAX_ATTACHED", "10"))   
+           
         ext.include_dirs.append(self.amalgamation_root)
         ext.sources.append(os.path.join(self.amalgamation_root, "sqlite3.c"))
 
